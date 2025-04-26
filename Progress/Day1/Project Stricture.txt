@@ -1,0 +1,12 @@
+TaskManager/
+├── TaskManager.API/
+│   ├── Extensions/
+│   │   ├── ServiceExtensions.cs
+│   │   └── AppExtensions.cs
+│   ├── Endpoints/
+│   │   └── HelloWorldEndpoint.cs
+│   └── Program.cs
+├── TaskManager.Application/
+├── TaskManager.Domain/
+├── TaskManager.Infrastructure/
+└── TaskManager.Tests/
