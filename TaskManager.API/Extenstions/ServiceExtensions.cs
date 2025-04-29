@@ -1,4 +1,6 @@
 namespace TaskManager.API.Extensions;
+using TaskManager.Application.Common.Interfaces;
+using TaskManager.Application.Services;
 
 public static class ServiceExtensions
 {
@@ -6,6 +8,7 @@ public static class ServiceExtensions
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddSingleton<ILoggerService, LoggerService>();
 
         return services;
     }
