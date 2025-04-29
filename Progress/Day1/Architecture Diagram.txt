@@ -1,0 +1,25 @@
+                        +----------------+
+                        |   TaskManager   |
+                        +----------------+
+                                |
+    +---------------------------+----------------------------+
+    |                            |                            |
++----------+             +----------------+          +----------------+
+|  API     |             | Application     |          | Domain         |
++----------+             +----------------+          +----------------+
+| - Minimal API Endpoints | - Business Logic |         | - Entities     |
+| - Swagger (UI)          | - Services        |        | - ValueObjects |
+| - Middlewares           | - DTOs            |        | - Enums        |
+| - Authentication (JWT)  | - Interfaces      |        | - Domain Events|
+| - Authorization         |                   |        |                |
++----------+              +----------------+          +----------------+
+        |
+        |
+    +----------------+
+    | Infrastructure  |
+    +----------------+
+    | - Database (CosmosDB)
+    | - External Services (Redis, Email)
+    | - Logging (Serilog)
+    +----------------+
+
