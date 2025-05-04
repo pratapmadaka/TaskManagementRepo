@@ -18,6 +18,10 @@ public static class AppExtensions
 
         app.UseHttpsRedirection();
 
+        //authorization
+        app.UseAuthentication();
+        app.UseAuthorization();
+
         return app;
     }
 }

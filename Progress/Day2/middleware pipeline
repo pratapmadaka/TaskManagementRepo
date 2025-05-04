@@ -1,0 +1,43 @@
+var builder = WebApplication.CreateBuilder(args);
+
+// Configure services
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication(/*...*/);
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
+
+// 1. Error handling
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+else
+{
+    app.UseExceptionHandler("/error");
+    app.UseHsts();
+}
+
+// 2. HTTPS redirection
+app.UseHttpsRedirection();
+
+// 3. CORS (optional, if needed)
+app.UseCors("YourCorsPolicy");
+
+// 4. Authentication
+app.UseAuthentication();
+
+// 5. Authorization
+app.UseAuthorization();
+
+// 6. Minimal API endpoints
+app.MapGet("/", () => "Hello world!").AllowAnonymous();
+
+// 7. (Optional) Secure endpoints
+app.MapGet("/secure", () => "Secure data")
+   .RequireAuthorization();
+
+app.Run();
