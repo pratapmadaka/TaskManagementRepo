@@ -1,8 +1,11 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Serilog;
 using TaskManager.Application.Common.Exceptions;
 using TaskManager.Application.Common.Interfaces;
+using TaskManager.Application.Interfaces;
 using TaskManager.Application.Services;
+using TaskManager.Domain.Entities;
 namespace TaskManager.API.Endpoints;
 
 public static class HelloWorldEndpoint
@@ -44,6 +47,23 @@ public static class HelloWorldEndpoint
             await logger.LogInformation("Logged in as Admin");
             return Results.Ok("Welcome Admin! 🎉");
         });
+
+        app.MapPost("/tasks", async (TaskItem task, ITaskRepository repo, ClaimsPrincipal user, ILoggerService _log) =>
+        {
+            var tenantId = user.FindFirst("tenantId")?.Value ?? "Tenant1";
+            task.TenantId = tenantId;
+            await _log.LogWarning($"Failed to insert task with Tenant: {task.TenantId}");
+            var created = await repo.AddAsync(task);
+            return Results.Ok(created);
+        }).RequireAuthorization();
+
+        app.MapGet("/tasks", async (ITaskRepository repo, ClaimsPrincipal user) =>
+        {
+            var tenantId = user.FindFirst("tenantId")?.Value ?? "Tenant1";
+            var tasks = await repo.GetAllAsync(tenantId);
+            return Results.Ok(tasks);
+        }).RequireAuthorization();
+
 
 
     }

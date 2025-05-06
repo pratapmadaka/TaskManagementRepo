@@ -6,8 +6,6 @@ using TaskManager.Application.Common.Settings;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using TaskManager.Application.Services;
-using Microsoft.Extensions.Options;
 
 
 
@@ -67,14 +65,15 @@ builder.WebHost.ConfigureKestrel(options =>
 var app = builder.Build();
 
 // Use Middlewares
-app.UseApplicationMiddlewares();
+await app.UseApplicationMiddlewares();
 
-
-// Map Endpoints
-app.MapHelloWorldEndpoint();
 
 //auth
 app.UseAuthentication(); // 👈 BEFORE Authorization
 app.UseAuthorization();
+
+// Map Endpoints
+app.MapHelloWorldEndpoint();
+app.MapRegisterNLoginEndpoint();
 
 app.Run();

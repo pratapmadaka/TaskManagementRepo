@@ -1,7 +1,10 @@
 using TaskManager.API.Middlewares;
 using TaskManager.Application.Common.Interfaces;
 using TaskManager.Application.Common.Settings;
+using TaskManager.Application.Interfaces;
 using TaskManager.Application.Services;
+using TaskManager.Information.Data;
+using TaskManager.Infrastructure.Repositories; // Add the namespace for TaskRepository
 using TaskManager.Infrastructure.Auth;
 
 
@@ -51,6 +54,15 @@ public static class ServiceExtensions
 
         //jwt service
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+        //cosmos db
+        services.AddSingleton<ICosmosDbService, CosmosDbService>();
+
+        //task repository
+        services.AddScoped<ITaskRepository, TaskRepository>();
+
+        //User repository
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }
