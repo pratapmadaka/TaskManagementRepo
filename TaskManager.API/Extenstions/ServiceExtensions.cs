@@ -1,14 +1,68 @@
-namespace TaskManager.API.Extensions;
+using TaskManager.API.Middlewares;
 using TaskManager.Application.Common.Interfaces;
+using TaskManager.Application.Common.Settings;
+using TaskManager.Application.Interfaces;
 using TaskManager.Application.Services;
+using TaskManager.Information.Data;
+using TaskManager.Infrastructure.Repositories; // Add the namespace for TaskRepository
+using TaskManager.Infrastructure.Auth;
+
+
+namespace TaskManager.API.Extensions;
 
 public static class ServiceExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        //swagger-beginning
+
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new() { Title = "TaskManager API", Version = "v1" });
+
+            // ✅ Add JWT Bearer Security Definition
+            c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Description = "Enter 'Bearer' [space] and then your token in the text input below.\n\nExample: \"Bearer eyJhbGci...\""
+            });
+
+            // ✅ Apply Bearer globally
+            c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+        });
+        //swagger-end
         services.AddSingleton<ILoggerService, LoggerService>();
+        services.AddTransient<ExceptionHandlingMiddleware>();
+
+        //jwt service
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+        //cosmos db
+        services.AddSingleton<ICosmosDbService, CosmosDbService>();
+
+        //task repository
+        services.AddScoped<ITaskRepository, TaskRepository>();
+
+        //User repository
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }
